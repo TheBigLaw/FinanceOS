@@ -11,6 +11,90 @@ function fmtK(v)   { return `${((+v||0)/1000).toFixed(1)}k`; }
 function val(id)   { return parseFloat(el(id)?.value)||0; }
 function rnd(base) { return base*(0.85+Math.random()*0.3); }
 
+// --- PERSISTÊNCIA (LOCALSTORAGE) ---
+function saveData() {
+  const data = {
+    pessoal: {
+      renda: val('pessoalRenda'),
+      meta: val('metaEconomia'),
+      gastos: GASTOS_IDS.reduce((acc, id) => { acc[id] = val(id); return acc; }, {}),
+      portfolio: el('portfolioName')?.value || ''
+    },
+    business: {
+      receita: val('pReceita'),
+      despesa: val('pDespesa'),
+      investimento: val('pInvestimento'),
+      taxa: val('pTaxa')
+    },
+    calculos: {
+      jcCapital: val('jcCapital'),
+      jcTaxa: val('jcTaxa'),
+      jcMeses: val('jcMeses'),
+      imImovel: val('imImovel'),
+      imAluguel: val('imAluguel'),
+      imFinanc: val('imFinanc'),
+      imMeses: val('imMeses')
+    },
+    transactions: transactions
+  };
+  localStorage.setItem('financeos_data', JSON.stringify(data));
+  
+  // Feedback visual simples
+  const btn = el('btnSaveLocal');
+  if(btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '✔ Salvo!';
+    btn.style.background = 'var(--green)';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+    }, 2000);
+  }
+}
+
+function loadData() {
+  const saved = localStorage.getItem('financeos_data');
+  if(!saved) return;
+  try {
+    const data = JSON.parse(saved);
+    // Pessoal
+    if(data.pessoal) {
+      if(el('pessoalRenda')) el('pessoalRenda').value = data.pessoal.renda;
+      if(el('metaEconomia')) el('metaEconomia').value = data.pessoal.meta;
+      if(data.pessoal.portfolio && el('portfolioName')) {
+        el('portfolioName').value = data.pessoal.portfolio;
+        el('portfolioNameDisplay').textContent = data.pessoal.portfolio;
+      }
+      if(data.pessoal.gastos) {
+        Object.keys(data.pessoal.gastos).forEach(id => {
+          if(el(id)) el(id).value = data.pessoal.gastos[id];
+        });
+      }
+    }
+    // Business
+    if(data.business) {
+      if(el('pReceita')) el('pReceita').value = data.business.receita;
+      if(el('pDespesa')) el('pDespesa').value = data.business.despesa;
+      if(el('pInvestimento')) el('pInvestimento').value = data.business.investimento;
+      if(el('pTaxa')) el('pTaxa').value = data.business.taxa;
+    }
+    // Cálculos
+    if(data.calculos) {
+      Object.keys(data.calculos).forEach(id => {
+        if(el(id)) el(id).value = data.calculos[id];
+      });
+    }
+    // Transações
+    if(data.transactions) {
+      transactions = data.transactions;
+    }
+  } catch(e) { console.error("Erro ao carregar dados:", e); }
+}
+
+function printReport() {
+  window.print();
+}
+
 function getMonthlyData(receita,despesa) {
   return MESES.map(m=>{const r=rnd(receita),d=rnd(despesa);return{mes:m,receita:r,despesa:d,lucro:r-d};});
 }
@@ -367,8 +451,8 @@ function renderTransactions(){
       <span style="color:var(--cream-dim)">${parcStr}</span>
       <span style="color:${valColor};font-weight:700;font-family:var(--mono)">${fmt(tx.val)}</span>
       <span style="display:flex;gap:5px;justify-content:flex-end">
-        <button onclick="startEdit(${tx.id})" title="Editar" style="background:rgba(106,144,212,0.14);border:1px solid rgba(106,144,212,0.3);color:#6a90d4;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer">✎</button>
-        <button onclick="deleteTx(${tx.id})" title="Excluir" style="background:rgba(168,72,72,0.14);border:1px solid rgba(168,72,72,0.3);color:#d06060;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer">✕</button>
+        <button onclick="startEdit(${tx.id})" title="Editar" class="btn-icon">✎</button>
+        <button onclick="deleteTx(${tx.id})" title="Excluir" class="btn-icon btn-icon-red">✕</button>
       </span>
     </div>`;
   }).join('')||'<div style="padding:24px;text-align:center;color:var(--cream-dim)">Nenhum lançamento encontrado.</div>';
@@ -408,6 +492,7 @@ function debounce(fn,ms){let t;return(...args)=>{clearTimeout(t);t=setTimeout(()
 const dRerender=debounce(rerender,300);
 
 document.addEventListener('DOMContentLoaded',()=>{
+  loadData(); // Carrega os dados salvos ao iniciar
   document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
   document.querySelectorAll('.nicho-btn').forEach(btn=>btn.addEventListener('click',()=>switchNicho(btn.dataset.nicho)));
   el('portfolioName')?.addEventListener('input',e=>{el('portfolioNameDisplay').textContent=e.target.value||'Meu Portfólio';});
@@ -424,5 +509,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   el('btnCancelTx')?.addEventListener('click',resetForm);
   el('btnSaveTx')?.addEventListener('click',saveTx);
   el('txFiltro')?.addEventListener('change',renderTransactions);
-  switchTab('pessoal');
+  
+  // Eventos para os novos botões
+  document.querySelectorAll('.btn-save-local').forEach(btn => btn.addEventListener('click', saveData));
+  document.querySelectorAll('.btn-print').forEach(btn => btn.addEventListener('click', printReport));
+  
+  switchTab('pessoal'); // Inicia na tab pessoal
+  rerender(); // Renderiza os dados carregados
 });
