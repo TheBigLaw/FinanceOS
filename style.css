@@ -198,3 +198,74 @@ body {
 .dica-icon { font-size: 18px; }
 .dica-titulo { font-size: 12px; font-weight: 700; color: var(--cream); margin-bottom: 2px; }
 .dica-texto { font-size: 11px; color: var(--cream-dim); }
+
+/* NOVOS BOTÕES */
+.btn-save-local {
+  background: rgba(196,161,90,0.1);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.btn-save-local:hover {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+.btn-print {
+  background: rgba(106,144,212,0.1);
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.btn-print:hover {
+  background: var(--blue);
+  color: white;
+}
+
+.btn-icon {
+  background: rgba(106,144,212,0.14);
+  border: 1px solid rgba(106,144,212,0.3);
+  color: #6a90d4;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.btn-icon-red {
+  background: rgba(168,72,72,0.14);
+  border: 1px solid rgba(168,72,72,0.3);
+  color: #d06060;
+}
+
+/* OTIMIZAÇÃO DE IMPRESSÃO */
+@media print {
+  .no-print { display: none !important; }
+  body { background: white !important; color: black !important; }
+  .layout { display: block !important; }
+  .main { padding: 0 !important; overflow: visible !important; }
+  .card { border: 1px solid #ccc !important; background: white !important; color: black !important; box-shadow: none !important; margin-bottom: 20px !important; break-inside: avoid; }
+  .kpi-card { border: 1px solid #ccc !important; background: white !important; color: black !important; }
+  .kpi-val, .pessoal-val, .saldo-value { color: black !important; }
+  .tab { display: block !important; opacity: 1 !important; transform: none !important; }
+  .tab:not(.active) { display: none !important; }
+  .chart-wrap { filter: grayscale(100%); }
+  .header { border-bottom: 2px solid black !important; background: white !important; color: black !important; position: static !important; }
+  .brand-name, .brand-sub { color: black !important; }
+  .brand-icon { border: 1px solid black !important; }
+  .table-header-tx, .planilha-header { background: #eee !important; color: black !important; border-bottom: 1px solid black !important; }
+  .table-row-tx, .planilha-row { border-bottom: 1px solid #ddd !important; color: black !important; }
+  .status-badge { border: 1px solid #999 !important; color: black !important; background: transparent !important; }
+}
