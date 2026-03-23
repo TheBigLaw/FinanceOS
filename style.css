@@ -250,22 +250,62 @@ body {
   color: #d06060;
 }
 
-/* OTIMIZAÇÃO DE IMPRESSÃO */
+/* OTIMIZAÇÃO DE IMPRESSÃO - VISUAL ORIGINAL + PAISAGEM */
 @media print {
+  @page { size: landscape; margin: 0; }
+  
+  /* Garante que as cores de fundo e imagens apareçam */
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  
   .no-print { display: none !important; }
-  body { background: white !important; color: black !important; }
+  
+  body { 
+    background: var(--bg) !important; 
+    color: var(--cream) !important;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  
   .layout { display: block !important; }
-  .main { padding: 0 !important; overflow: visible !important; }
-  .card { border: 1px solid #ccc !important; background: white !important; color: black !important; box-shadow: none !important; margin-bottom: 20px !important; break-inside: avoid; }
-  .kpi-card { border: 1px solid #ccc !important; background: white !important; color: black !important; }
-  .kpi-val, .pessoal-val, .saldo-value { color: black !important; }
+  .sidebar { display: none !important; }
+  
+  .main { 
+    padding: 20px !important; 
+    overflow: visible !important;
+    width: 100% !important;
+  }
+  
+  .header { 
+    position: static !important; 
+    background: var(--surface) !important;
+    border-bottom: 1px solid var(--border-gold) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+
+  .card, .kpi-card { 
+    background: linear-gradient(145deg, #17151e 0%, #13111a 100%) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
   .tab { display: block !important; opacity: 1 !important; transform: none !important; }
   .tab:not(.active) { display: none !important; }
-  .chart-wrap { filter: grayscale(100%); }
-  .header { border-bottom: 2px solid black !important; background: white !important; color: black !important; position: static !important; }
-  .brand-name, .brand-sub { color: black !important; }
-  .brand-icon { border: 1px solid black !important; }
-  .table-header-tx, .planilha-header { background: #eee !important; color: black !important; border-bottom: 1px solid black !important; }
-  .table-row-tx, .planilha-row { border-bottom: 1px solid #ddd !important; color: black !important; }
-  .status-badge { border: 1px solid #999 !important; color: black !important; background: transparent !important; }
+  
+  /* Mantém os gráficos visíveis e coloridos */
+  canvas { max-width: 100% !important; height: auto !important; }
+  
+  .table-header-tx, .planilha-header { 
+    background: #110f16 !important; 
+    color: var(--cream-dim) !important; 
+  }
+  
+  .table-row-tx, .planilha-row { 
+    border-bottom: 1px solid var(--border) !important; 
+  }
+
+  /* Garante que as cores dos badges apareçam */
+  .status-badge { border-width: 1px !important; }
 }
