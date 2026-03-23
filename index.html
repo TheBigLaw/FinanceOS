@@ -5,419 +5,375 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FinanceOS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" href="logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png" />
 </head>
 <body>
+<header class="header">
+  <div class="header-brand">
+    <div class="brand-icon">F</div>
+    <div>
+      <div class="brand-name">FinanceOS</div>
+      <div class="brand-sub">Sistema de Gestão Financeira</div>
+    </div>
+  </div>
+  <div class="nicho-tabs">
+    <button class="nicho-btn active" data-nicho="Geral" onclick="switchNicho('Geral')">Geral</button>
+    <button class="nicho-btn" data-nicho="SaaS" onclick="switchNicho('SaaS')">SaaS</button>
+    <button class="nicho-btn" data-nicho="E-commerce" onclick="switchNicho('E-commerce')">E-commerce</button>
+    <button class="nicho-btn" data-nicho="Infoproduto" onclick="switchNicho('Infoproduto')">Infoproduto</button>
+    <button class="nicho-btn" data-nicho="Serviços" onclick="switchNicho('Serviços')">Serviços</button>
+  </div>
+  <div class="header-saldo" id="headerSaldo">
+    <div class="saldo-label">Resultado Consolidado</div>
+    <div class="saldo-value" id="headerSaldoVal">R$ 0,00</div>
+  </div>
+</header>
 
-  <!-- ═══ HEADER ═══ -->
-  <header class="header">
-    <div class="header-brand">
-      <div class="brand-icon">₢</div>
-      <div>
-        <p class="brand-name">FinanceOS</p>
-        <p class="brand-sub" id="portfolioNameDisplay">Meu Portfólio</p>
+<div class="layout">
+  <aside class="sidebar">
+    <button class="nav-btn active" data-tab="pessoal">🏠 Dashboard Pessoal</button>
+    <button class="nav-btn" data-tab="dashboard">🏢 Dashboard Business</button>
+    <button class="nav-btn" data-tab="lancamentos">📝 Lançamentos</button>
+    <button class="nav-btn" data-tab="calculos">🧮 Cálculos</button>
+    <button class="nav-btn" data-tab="graficos">📊 Gráficos</button>
+    <button class="nav-btn" data-tab="planilha">📅 Planilha Anual</button>
+    <div class="sidebar-metrics">
+      <p class="sidebar-metrics-title">Resumo em Tempo Real</p>
+      <div class="sidebar-row"><span>Margem Business</span><span class="val-gold" id="sideMargem">0%</span></div>
+      <div class="sidebar-row"><span>ROI Projetado</span><span class="val-green" id="sideRoi">0%</span></div>
+      <div class="sidebar-row"><span>VPL Atual</span><span class="val-green" id="sideVpl">R$ 0</span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- ═══ DASHBOARD PESSOAL ═══ -->
+    <section id="tab-pessoal" class="tab active">
+      <div class="pessoal-header">
+        <div>
+          <h1>Dashboard Pessoal</h1>
+          <p class="page-sub">Controle simplificado das suas finanças individuais</p>
+        </div>
+        <div style="text-align:right">
+          <input type="text" id="portfolioName" placeholder="Nome do Portfólio" style="background:transparent;border:none;border-bottom:1px solid var(--border-gold);color:var(--gold);text-align:right;font-family:var(--font-serif);font-size:18px;outline:none;width:200px">
+          <p id="portfolioNameDisplay" style="font-size:10px;color:var(--cream-dim);margin-top:4px">Meu Portfólio</p>
+        </div>
       </div>
-    </div>
 
-    <div class="nicho-tabs" id="nichoTabs">
-      <button class="nicho-btn active" data-nicho="Pessoal">Pessoal</button>
-      <button class="nicho-btn" data-nicho="Empresarial">Empresarial</button>
-      <button class="nicho-btn" data-nicho="Investimentos">Investimentos</button>
-      <button class="nicho-btn" data-nicho="Imóveis">Imóveis</button>
-      <button class="nicho-btn" data-nicho="Startup">Startup</button>
-    </div>
-
-    <div class="header-saldo" id="headerSaldo">
-      <p class="saldo-label">Saldo Mensal</p>
-      <p class="saldo-value positive" id="headerSaldoVal">R$ 0,00</p>
-    </div>
-  </header>
-
-  <div class="layout">
-
-    <!-- ═══ SIDEBAR ═══ -->
-    <nav class="sidebar">
-      <button class="nav-btn active" data-tab="pessoal">🏠 Pessoal</button>
-      <button class="nav-btn" data-tab="dashboard">📊 Dashboard</button>
-      <button class="nav-btn" data-tab="lancamentos">📋 Lançamentos</button>
-      <button class="nav-btn" data-tab="calculos">🧮 Cálculos</button>
-      <button class="nav-btn" data-tab="graficos">📈 Gráficos</button>
-      <button class="nav-btn" data-tab="planilha">📑 Planilha</button>
-
-      <div class="sidebar-metrics">
-        <p class="sidebar-metrics-title">Indicadores</p>
-        <div class="sidebar-row"><span>ROI</span><span id="sideRoi" class="val-gold">0%</span></div>
-        <div class="sidebar-row"><span>Margem</span><span id="sideMargem" class="val-gold">0%</span></div>
-        <div class="sidebar-row"><span>VPL</span><span id="sideVpl" class="val-green">R$0</span></div>
-      </div>
-    </nav>
-
-    <!-- ═══ MAIN ═══ -->
-    <main class="main">
-
-      <!-- ════════════════════════════════════════
-           ABA: PESSOAL (Simples)
-      ════════════════════════════════════════ -->
-      <section id="tab-pessoal" class="tab active">
-        <div class="page-header">
-          <div>
-            <h1>Meu Dinheiro do Mês 💰</h1>
-            <p class="page-sub">Simples e direto — quanto entra, quanto sai, quanto sobra</p>
-          </div>
-        </div>
-
-        <!-- Quanto você ganha -->
-        <div class="simple-card">
-          <div class="simple-card-icon">💵</div>
-          <div class="simple-card-content">
-            <label class="simple-label">Quanto você ganha por mês? (salário, freela, qualquer coisa)</label>
-            <div class="input-row">
-              <span class="input-prefix">R$</span>
-              <input type="number" id="pessoalRenda" class="simple-input big-input" placeholder="0,00" value="3500" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Gastos do mês -->
+      <div class="pessoal-grid">
         <div class="card">
-          <p class="card-title">📦 Seus gastos do mês</p>
-          <p class="card-sub">Preencha só o que você gasta. Deixe em branco o que não tiver.</p>
-          <div class="gastos-grid">
-            <div class="gasto-item">
-              <label>🏠 Aluguel / Moradia</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_aluguel" placeholder="0" value="1200" /></div>
-            </div>
-            <div class="gasto-item">
-              <label>🛒 Mercado / Alimentação</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_mercado" placeholder="0" value="600" /></div>
-            </div>
-            <div class="gasto-item">
-              <label>🚗 Transporte / Gasolina</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_transporte" placeholder="0" value="250" /></div>
-            </div>
-            <div class="gasto-item">
-              <label>💊 Saúde / Farmácia</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_saude" placeholder="0" value="100" /></div>
-            </div>
-            <div class="gasto-item">
-              <label>📱 Internet / Celular / TV</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_internet" placeholder="0" value="150" /></div>
-            </div>
-            <div class="gasto-item">
-              <label>💡 Água / Luz / Gás</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_contas" placeholder="0" value="180" /></div>
-            </div>
-            <div class="gasto-item">
-              <label>🎮 Lazer / Restaurante / Rolê</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_lazer" placeholder="0" value="200" /></div>
-            </div>
-            <div class="gasto-item">
-              <label>👗 Roupas / Compras</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_compras" placeholder="0" value="0" /></div>
-            </div>
-            <div class="gasto-item">
-              <label>💳 Dívidas / Parcelas</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_dividas" placeholder="0" value="0" /></div>
-            </div>
-            <div class="gasto-item">
-              <label>📦 Outros gastos</label>
-              <div class="input-wrap"><span class="pfx">R$</span><input type="number" class="gasto-input" id="g_outros" placeholder="0" value="120" /></div>
-            </div>
+          <p class="pessoal-section-title">💰 Entradas & Gastos</p>
+          <div class="pessoal-kpis">
+            <div class="pessoal-kpi"><p class="pessoal-label">Renda Mensal</p><p class="pessoal-val green" id="res_renda">R$ 0,00</p></div>
+            <div class="pessoal-kpi"><p class="pessoal-label">Total Gastos</p><p class="pessoal-val red" id="res_gasto">R$ 0,00</p></div>
+            <div class="pessoal-kpi"><p class="pessoal-label">Sobra/Déficit</p><p class="pessoal-val" id="res_sobra">R$ 0,00</p></div>
           </div>
-        </div>
 
-        <!-- Resultado claro -->
-        <div class="resultado-box" id="resultadoPessoal">
-          <div class="resultado-item">
-            <span class="res-label">Você ganha</span>
-            <span class="res-val green" id="res_renda">R$ 3.500,00</span>
-          </div>
-          <div class="resultado-divider">−</div>
-          <div class="resultado-item">
-            <span class="res-label">Você gasta</span>
-            <span class="res-val red" id="res_gasto">R$ 0,00</span>
-          </div>
-          <div class="resultado-divider">=</div>
-          <div class="resultado-item destaque">
-            <span class="res-label">Sobra pra você</span>
-            <span class="res-val" id="res_sobra">R$ 0,00</span>
-          </div>
-        </div>
-
-        <!-- Mensagem motivacional -->
-        <div class="mensagem-box" id="mensagemBox">
-          <p id="mensagemTexto">✅ Calculando...</p>
-        </div>
-
-        <!-- Meta de economia -->
-        <div class="card">
-          <p class="card-title">🎯 Meta de economia</p>
-          <p class="card-sub">Quanto você quer guardar por mês?</p>
-          <div class="meta-row">
-            <div class="input-wrap" style="max-width:220px">
-              <span class="pfx">R$</span>
-              <input type="number" id="metaEconomia" class="gasto-input" placeholder="0" value="500" />
-            </div>
-            <div class="meta-progress-wrap">
-              <div class="meta-progress-bar">
-                <div class="meta-progress-fill" id="metaFill" style="width:0%"></div>
-              </div>
-              <p class="meta-progress-text" id="metaTexto">0% da meta</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dicas simples -->
-        <div class="dicas-grid" id="dicasGrid"></div>
-
-        <!-- Mini gráfico de pizza -->
-        <div class="card">
-          <p class="card-title">🍕 Para onde vai seu dinheiro?</p>
-          <div class="chart-wrap" style="max-height:280px">
-            <canvas id="chartPessoalPizza"></canvas>
-          </div>
-        </div>
-      </section>
-
-      <!-- ════════════════════════════════════════
-           ABA: DASHBOARD
-      ════════════════════════════════════════ -->
-      <section id="tab-dashboard" class="tab">
-        <div class="page-header">
-          <div>
-            <h1>Dashboard <span id="nichoLabel">Pessoal</span></h1>
-            <p class="page-sub">Visão geral com todos os indicadores calculados automaticamente</p>
-          </div>
-          <div style="min-width:200px">
-            <label class="field-label">Nome do portfólio</label>
-            <input type="text" id="portfolioName" class="field-input" value="Meu Portfólio" />
-          </div>
-        </div>
-
-        <!-- KPIs linha 1 -->
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <p class="kpi-label">Receita Total</p>
-            <p class="kpi-val green" id="kpiReceita">R$ 0,00</p>
-            <p class="kpi-sub">Entrada mensal</p>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">Despesa Total</p>
-            <p class="kpi-val red" id="kpiDespesa">R$ 0,00</p>
-            <p class="kpi-sub">Saída mensal</p>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">Lucro Líquido</p>
-            <p class="kpi-val" id="kpiLucro">R$ 0,00</p>
-            <p class="kpi-sub" id="kpiLucroSub">0% de margem</p>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">ROI</p>
-            <p class="kpi-val gold" id="kpiRoi">0%</p>
-            <p class="kpi-sub">Retorno sobre investimento</p>
-          </div>
-        </div>
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <p class="kpi-label">EBITDA</p>
-            <p class="kpi-val blue" id="kpiEbitda">R$ 0,00</p>
-            <p class="kpi-sub">Resultado operacional</p>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">VPL</p>
-            <p class="kpi-val" id="kpiVpl">R$ 0,00</p>
-            <p class="kpi-sub" id="kpiVplSub">—</p>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">Payback</p>
-            <p class="kpi-val gold" id="kpiPayback">—</p>
-            <p class="kpi-sub">Retorno do investimento</p>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">Capital de Giro</p>
-            <p class="kpi-val" id="kpiGiro">R$ 0,00</p>
-            <p class="kpi-sub">Disponível operacional</p>
-          </div>
-        </div>
-
-        <!-- Parâmetros financeiros -->
-        <div class="card">
-          <p class="card-title">⚙ Parâmetros Financeiros</p>
-          <div class="params-grid">
-            <div class="field-group"><label class="field-label">Receita Mensal</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pReceita" class="field-input" value="15000" /></div></div>
-            <div class="field-group"><label class="field-label">Despesas Mensais</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pDespesa" class="field-input" value="9000" /></div></div>
-            <div class="field-group"><label class="field-label">Capital Investido</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pInvestimento" class="field-input" value="50000" /></div></div>
-            <div class="field-group"><label class="field-label">Taxa de Juros</label><div class="input-wrap"><span class="pfx">%</span><input type="number" id="pTaxa" class="field-input" value="1.2" step="0.1" /></div></div>
-            <div class="field-group"><label class="field-label">Período (meses)</label><div class="input-wrap"><span class="pfx">#</span><input type="number" id="pMeses" class="field-input" value="24" /></div></div>
-            <div class="field-group"><label class="field-label">Renda de Aluguel</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pAluguel" class="field-input" value="2500" /></div></div>
-            <div class="field-group"><label class="field-label">Valor do Imóvel</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pImovel" class="field-input" value="450000" /></div></div>
-            <div class="field-group"><label class="field-label">Financiamento</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pFinanciamento" class="field-input" value="200000" /></div></div>
-          </div>
-        </div>
-
-        <!-- Charts -->
-        <div class="charts-row">
-          <div class="card flex-1">
-            <p class="card-title">Receita vs Despesa (12 meses)</p>
-            <div class="chart-wrap"><canvas id="chartArea"></canvas></div>
-          </div>
-          <div class="card" style="width:300px">
-            <p class="card-title">Distribuição de Gastos</p>
-            <div class="chart-wrap"><canvas id="chartPie"></canvas></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ════════════════════════════════════════
-           ABA: LANÇAMENTOS
-      ════════════════════════════════════════ -->
-      <section id="tab-lancamentos" class="tab">
-        <div class="page-header">
-          <div>
-            <h1>Lançamentos</h1>
-            <p class="page-sub">Controle de todas as entradas e saídas</p>
-          </div>
-          <button class="btn-primary" id="btnShowAdd">+ Novo Lançamento</button>
-        </div>
-
-        <!-- Formulário -->
-        <div class="card add-form" id="addForm" style="display:none">
-          <p class="card-title" style="color:var(--gold)">Novo Lançamento</p>
-          <div class="add-form-grid">
-            <div class="field-group"><label class="field-label">Descrição</label><input type="text" id="txDesc" class="field-input" placeholder="Ex: Salário, Mercado..." /></div>
-            <div class="field-group"><label class="field-label">Categoria</label><input type="text" id="txCat" class="field-input" placeholder="Ex: Receita, Moradia..." /></div>
-            <div class="field-group"><label class="field-label">Valor (R$)</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="txVal" class="field-input" placeholder="0,00" /></div></div>
+          <div class="pessoal-inputs">
             <div class="field-group">
-              <label class="field-label">Tipo</label>
-              <select id="txTipo" class="field-input field-select">
-                <option value="entrada">Entrada</option>
-                <option value="saida">Saída</option>
-                <option value="investimento">Investimento</option>
+              <label class="field-label">Sua Renda (R$)</label>
+              <div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pessoalRenda" class="field-input" value="5500"></div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Meta de Economia (R$)</label>
+              <div class="input-wrap"><span class="pfx">R$</span><input type="number" id="metaEconomia" class="field-input" value="1000"></div>
+            </div>
+          </div>
+
+          <div style="margin-top:20px">
+            <p class="pessoal-section-title">📊 Distribuição de Gastos</p>
+            <div class="pessoal-inputs" style="grid-template-columns: repeat(2, 1fr); gap: 10px;">
+              <div class="field-group"><label class="field-label">Aluguel/Casa</label><input type="number" id="g_aluguel" class="gasto-input" value="1500"></div>
+              <div class="field-group"><label class="field-label">Mercado</label><input type="number" id="g_mercado" class="gasto-input" value="800"></div>
+              <div class="field-group"><label class="field-label">Transporte</label><input type="number" id="g_transporte" class="gasto-input" value="400"></div>
+              <div class="field-group"><label class="field-label">Saúde</label><input type="number" id="g_saude" class="gasto-input" value="250"></div>
+              <div class="field-group"><label class="field-label">Lazer/Sair</label><input type="number" id="g_lazer" class="gasto-input" value="300"></div>
+              <div class="field-group"><label class="field-label">Outros</label><input type="number" id="g_outros" class="gasto-input" value="200"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="pessoal-section-title">💡 Insights & Metas</p>
+          <div class="pessoal-mensagem">
+            <p class="mensagem-texto" id="mensagemTexto">Analise seus dados para receber dicas personalizadas.</p>
+          </div>
+          
+          <div class="meta-progresso">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:11px;font-weight:700">Meta Mensal</span><span id="metaStatus" style="font-size:11px;color:var(--gold)">Em andamento</span></div>
+            <div class="meta-bar"><div class="meta-fill" id="metaFill" style="width: 0%"></div></div>
+            <p class="meta-texto" id="metaTexto">Defina uma meta para acompanhar seu progresso.</p>
+          </div>
+
+          <div style="margin-top:25px">
+            <p class="pessoal-section-title">📈 Gráfico de Gastos</p>
+            <div class="chart-wrap" style="height:180px"><canvas id="chartPessoalPizza"></canvas></div>
+          </div>
+
+          <div class="dicas-grid" id="dicasGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ DASHBOARD BUSINESS ═══ -->
+    <section id="tab-dashboard" class="tab">
+      <div class="page-header">
+        <div><h1>Dashboard Business: <span id="nichoLabel" style="color:var(--gold)">Geral</span></h1><p class="page-sub">Visão estratégica e indicadores de performance</p></div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><p class="kpi-label">Receita Estimada</p><p class="kpi-val green" id="kpiReceita">R$ 0,00</p><p class="kpi-sub">Projeção mensal</p></div>
+        <div class="kpi-card"><p class="kpi-label">Custos Operacionais</p><p class="kpi-val red" id="kpiDespesa">R$ 0,00</p><p class="kpi-sub">Despesas fixas/variáveis</p></div>
+        <div class="kpi-card"><p class="kpi-label">Lucro Líquido</p><p class="kpi-val" id="kpiLucro">R$ 0,00</p><p class="kpi-sub" id="kpiLucroSub">0% de margem</p></div>
+        <div class="kpi-card"><p class="kpi-label">Retorno (ROI)</p><p class="kpi-val gold" id="kpiRoi">0%</p><p class="kpi-sub">Sobre investimento inicial</p></div>
+      </div>
+      <div class="charts-row">
+        <div class="card" style="flex:2"><p class="card-title">Fluxo de Caixa Projetado (12 meses)</p><div class="chart-wrap"><canvas id="chartArea"></canvas></div></div>
+        <div class="card" style="flex:1"><p class="card-title">Composição de Custos</p><div class="chart-wrap"><canvas id="chartPie"></canvas></div></div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><p class="kpi-label">VPL (Valor Presente Líquido)</p><p class="kpi-val" id="kpiVpl">R$ 0,00</p><p class="kpi-sub" id="kpiVplSub">24 meses @ 1.2%</p></div>
+        <div class="kpi-card"><p class="kpi-label">Payback Estimado</p><p class="kpi-val blue" id="kpiPayback">0 meses</p><p class="kpi-sub">Tempo para recuperar capital</p></div>
+        <div class="kpi-card"><p class="kpi-label">EBITDA</p><p class="kpi-val" id="kpiEbitda">R$ 0,00</p><p class="kpi-sub">Lucro antes de impostos/depr.</p></div>
+        <div class="kpi-card"><p class="kpi-label">Capital de Giro</p><p class="kpi-val" id="kpiGiro">R$ 0,00</p><p class="kpi-sub">Necessidade mínima de caixa</p></div>
+      </div>
+      <div class="card">
+        <p class="card-title">Simulação de Cenários</p>
+        <div class="params-grid">
+          <div class="field-group"><label class="field-label">Receita Mensal (R$)</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pReceita" class="field-input" value="15000" /></div></div>
+          <div class="field-group"><label class="field-label">Despesa Mensal (R$)</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pDespesa" class="field-input" value="9000" /></div></div>
+          <div class="field-group"><label class="field-label">Invest. Inicial (R$)</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="pInvestimento" class="field-input" value="50000" /></div></div>
+          <div class="field-group"><label class="field-label">Taxa de Desconto (%)</label><div class="input-wrap"><span class="pfx">%</span><input type="number" id="pTaxa" class="field-input" value="1.2" step="0.1" /></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ LANÇAMENTOS ═══ -->
+    <section id="tab-lancamentos" class="tab">
+      <div class="page-header">
+        <div><h1>Fluxo de Caixa & Lançamentos</h1><p class="page-sub">Gestão detalhada de entradas e saídas</p></div>
+        <div style="display:flex;gap:10px">
+          <select id="txFiltro" class="field-input field-select" style="width:160px">
+            <option value="todos">Todos Lançamentos</option>
+            <option value="entrada">Apenas Entradas</option>
+            <option value="saida">Apenas Saídas</option>
+            <option value="vencida">🔴 Vencidas</option>
+            <option value="pendente">⏳ Pendentes</option>
+            <option value="pago">✅ Pagos</option>
+          </select>
+          <button class="btn-success" id="btnShowAdd" style="width:auto;padding:0 20px">+ Novo Lançamento</button>
+        </div>
+      </div>
+
+      <!-- Form de Adição (Oculto por padrão) -->
+      <div id="addForm" class="card" style="display:none;margin-bottom:20px;border:1px solid var(--gold)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+          <h3 style="font-family:var(--font-serif);color:var(--gold)">Novo Lançamento Financeiro</h3>
+          <button id="btnCancelTx" style="background:transparent;border:none;color:var(--cream-dim);cursor:pointer">Cancelar (✕)</button>
+        </div>
+        <div class="form-grid-base">
+          <div class="field-group">
+            <label class="field-label">Tipo</label>
+            <select id="txTipo" class="field-input field-select" onchange="toggleDespesaFields()">
+              <option value="saida">🔴 Despesa / Saída</option>
+              <option value="entrada">🟢 Receita / Entrada</option>
+              <option value="investimento">🔵 Investimento</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Descrição</label>
+            <input type="text" id="txDesc" class="field-input" placeholder="Ex: Aluguel Escritório" style="padding-left:12px"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Categoria</label>
+            <select id="txCat" class="field-input field-select">
+              <option>Geral</option>
+              <option>Aluguel</option>
+              <option>Vendas</option>
+              <option>Serviços Prestados</option>
+              <option>Marketing / Publicidade</option>
+              <option>TI / Tecnologia</option>
+              <option>RH / Pessoal</option>
+              <option>Logística</option>
+              <option>Impostos / Taxas</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Valor (R$)</label>
+            <div class="input-wrap"><span class="pfx">R$</span><input type="number" id="txVal" class="field-input" placeholder="0,00"/></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Data Competência</label>
+            <input type="date" id="txDataComp" class="field-input" style="padding-left:12px"/>
+          </div>
+        </div>
+
+        <div id="despesaFields" style="margin-top:12px">
+          <div style="border-top:1px solid var(--border-gold);padding-top:16px;margin-bottom:14px">
+            <p style="font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;font-weight:700">⚙ Detalhes da Despesa</p>
+          </div>
+          <div class="form-grid-despesa">
+            <div class="field-group">
+              <label class="field-label">Data de Vencimento</label>
+              <input type="date" id="txVencimento" class="field-input" style="padding-left:12px"/>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Status de Pagamento</label>
+              <select id="txStatus" class="field-input field-select" onchange="updateStatusColor()">
+                <option value="pendente">⏳ Pendente</option>
+                <option value="pago">✅ Pago</option>
+                <option value="vencida">🔴 Vencida</option>
+                <option value="agendado">📅 Agendado</option>
+                <option value="parcial">⚡ Pago Parcialmente</option>
               </select>
             </div>
-            <div class="field-group" style="align-self:end">
-              <button class="btn-success" id="btnSaveTx">✔ Salvar</button>
+            <div class="field-group">
+              <label class="field-label">Forma de Pagamento</label>
+              <select id="txFormaPag" class="field-input field-select">
+                <option value="">Selecione...</option>
+                <option>Boleto Bancário</option>
+                <option>PIX</option>
+                <option>Cartão de Crédito</option>
+                <option>Cartão de Débito</option>
+                <option>Transferência Bancária (TED/DOC)</option>
+                <option>Cheque</option>
+                <option>Dinheiro</option>
+                <option>Débito Automático</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Centro de Custo</label>
+              <select id="txCentro" class="field-input field-select">
+                <option value="">Geral</option>
+                <option>Administrativo</option>
+                <option>Comercial / Vendas</option>
+                <option>Produção / Operações</option>
+                <option>Marketing</option>
+                <option>TI / Tecnologia</option>
+                <option>RH / Pessoal</option>
+                <option>Financeiro</option>
+                <option>Logística</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Nº NF / Documento</label>
+              <input type="text" id="txNF" class="field-input" placeholder="Ex: NF-000123" style="padding-left:12px"/>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Parcelamento</label>
+              <select id="txParcelamento" class="field-input field-select">
+                <option value="1">À vista (1x)</option>
+                <option value="2">2x</option>
+                <option value="3">3x</option>
+                <option value="4">4x</option>
+                <option value="6">6x</option>
+                <option value="10">10x</option>
+                <option value="12">12x</option>
+                <option value="24">24x</option>
+                <option value="36">36x</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Valor Já Pago (R$)</label>
+              <div class="input-wrap"><span class="pfx">R$</span><input type="number" id="txValPago" class="field-input" placeholder="0,00"/></div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Recorrência</label>
+              <select id="txRecorrencia" class="field-input field-select">
+                <option value="unica">Única</option>
+                <option value="mensal">Mensal</option>
+                <option value="trimestral">Trimestral</option>
+                <option value="semestral">Semestral</option>
+                <option value="anual">Anual</option>
+              </select>
             </div>
           </div>
-        </div>
-
-        <!-- Resumo -->
-        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
-          <div class="kpi-card"><p class="kpi-label">Total Entradas</p><p class="kpi-val green" id="txTotalEntrada">R$ 0,00</p></div>
-          <div class="kpi-card"><p class="kpi-label">Total Saídas</p><p class="kpi-val red" id="txTotalSaida">R$ 0,00</p></div>
-          <div class="kpi-card"><p class="kpi-label">Saldo</p><p class="kpi-val" id="txSaldo">R$ 0,00</p></div>
-        </div>
-
-        <!-- Tabela -->
-        <div class="card table-card">
-          <div class="table-header">
-            <span>Descrição</span><span>Categoria</span><span>Tipo</span><span>Valor</span>
-          </div>
-          <div id="txList"></div>
-        </div>
-      </section>
-
-      <!-- ════════════════════════════════════════
-           ABA: CÁLCULOS
-      ════════════════════════════════════════ -->
-      <section id="tab-calculos" class="tab">
-        <div class="page-header">
-          <div>
-            <h1>Cálculos Automatizados</h1>
-            <p class="page-sub">Indicadores financeiros calculados em tempo real</p>
+          <div class="field-group" style="margin-top:12px">
+            <label class="field-label">Observações / Histórico</label>
+            <input type="text" id="txObs" class="field-input" placeholder="Anotações adicionais sobre este lançamento..." style="padding-left:12px"/>
           </div>
         </div>
 
-        <div class="calc-grid">
-          <!-- Rentabilidade -->
-          <div class="card">
-            <p class="card-title gold-title">📊 Rentabilidade</p>
-            <div class="calc-rows" id="calcRentabilidade"></div>
-          </div>
-          <!-- Juros Compostos -->
-          <div class="card">
-            <p class="card-title gold-title">💰 Juros Compostos</p>
-            <div class="params-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
-              <div class="field-group"><label class="field-label">Capital (R$)</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="jcCapital" class="field-input" value="50000" /></div></div>
-              <div class="field-group"><label class="field-label">Taxa (% a.m.)</label><div class="input-wrap"><span class="pfx">%</span><input type="number" id="jcTaxa" class="field-input" value="1.2" step="0.1" /></div></div>
-              <div class="field-group"><label class="field-label">Período</label><div class="input-wrap"><span class="pfx">#</span><input type="number" id="jcMeses" class="field-input" value="24" /></div></div>
-            </div>
-            <div class="calc-rows" id="calcJuros"></div>
-          </div>
-          <!-- Imóvel -->
-          <div class="card">
-            <p class="card-title gold-title">🏠 Análise Imobiliária</p>
-            <div class="params-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px">
-              <div class="field-group"><label class="field-label">Valor do Imóvel</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="imImovel" class="field-input" value="450000" /></div></div>
-              <div class="field-group"><label class="field-label">Aluguel Mensal</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="imAluguel" class="field-input" value="2500" /></div></div>
-              <div class="field-group"><label class="field-label">Financiamento</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="imFinanc" class="field-input" value="200000" /></div></div>
-              <div class="field-group"><label class="field-label">Meses</label><div class="input-wrap"><span class="pfx">#</span><input type="number" id="imMeses" class="field-input" value="240" /></div></div>
-            </div>
-            <div class="calc-rows" id="calcImovel"></div>
-          </div>
-          <!-- Projeto -->
-          <div class="card">
-            <p class="card-title gold-title">📈 Análise de Projeto</p>
-            <div class="calc-rows" id="calcProjeto"></div>
-          </div>
+        <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end">
+          <button class="btn-success" id="btnSaveTx" style="width:auto;padding:10px 28px">✔ Salvar Lançamento</button>
         </div>
-      </section>
+      </div>
 
-      <!-- ════════════════════════════════════════
-           ABA: GRÁFICOS
-      ════════════════════════════════════════ -->
-      <section id="tab-graficos" class="tab">
-        <div class="page-header">
-          <div>
-            <h1>Gráficos & Análises</h1>
-            <p class="page-sub">Visualizações dinâmicas do seu financeiro</p>
-          </div>
+      <!-- KPIs de lançamentos -->
+      <div class="kpi-grid" style="grid-template-columns:repeat(5,1fr)">
+        <div class="kpi-card"><p class="kpi-label">Entradas</p><p class="kpi-val green" id="txTotalEntrada">R$ 0,00</p></div>
+        <div class="kpi-card"><p class="kpi-label">Saídas</p><p class="kpi-val red" id="txTotalSaida">R$ 0,00</p></div>
+        <div class="kpi-card"><p class="kpi-label">Saldo</p><p class="kpi-val" id="txSaldo">R$ 0,00</p></div>
+        <div class="kpi-card"><p class="kpi-label">🔴 Vencidas</p><p class="kpi-val red" id="txVencidas">R$ 0,00</p></div>
+        <div class="kpi-card"><p class="kpi-label">⏳ A Vencer (30d)</p><p class="kpi-val gold" id="txAVencer">R$ 0,00</p></div>
+      </div>
+
+      <!-- TABELA -->
+      <div class="card table-card">
+        <div class="table-header-tx">
+          <span>Descrição</span><span>Categoria</span><span>Vencimento</span><span>Status</span>
+          <span>Forma Pag.</span><span>Centro</span><span>Parcelas</span><span>Valor</span><span style="text-align:right">Ações</span>
         </div>
+        <div id="txList"></div>
+      </div>
+    </section>
 
-        <div class="charts-grid-2">
-          <div class="card">
-            <p class="card-title">Crescimento por Juros Compostos</p>
-            <div class="chart-wrap"><canvas id="chartJuros"></canvas></div>
+    <!-- ═══ CÁLCULOS ═══ -->
+    <section id="tab-calculos" class="tab">
+      <div class="page-header">
+        <div><h1>Cálculos Automatizados</h1><p class="page-sub">Indicadores financeiros calculados em tempo real</p></div>
+      </div>
+      <div class="calc-grid">
+        <div class="card"><p class="card-title gold-title">📊 Rentabilidade</p><div class="calc-rows" id="calcRentabilidade"></div></div>
+        <div class="card">
+          <p class="card-title gold-title">💰 Juros Compostos</p>
+          <div class="params-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+            <div class="field-group"><label class="field-label">Capital (R$)</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="jcCapital" class="field-input" value="50000" /></div></div>
+            <div class="field-group"><label class="field-label">Taxa (% a.m.)</label><div class="input-wrap"><span class="pfx">%</span><input type="number" id="jcTaxa" class="field-input" value="1.2" step="0.1" /></div></div>
+            <div class="field-group"><label class="field-label">Período</label><div class="input-wrap"><span class="pfx">#</span><input type="number" id="jcMeses" class="field-input" value="24" /></div></div>
           </div>
-          <div class="card">
-            <p class="card-title">Resultado Mensal (Lucro/Prejuízo)</p>
-            <div class="chart-wrap"><canvas id="chartLucroMensal"></canvas></div>
-          </div>
-          <div class="card">
-            <p class="card-title">Receita vs Despesa</p>
-            <div class="chart-wrap"><canvas id="chartBarRecDesp"></canvas></div>
-          </div>
-          <div class="card">
-            <p class="card-title">Alocação de Despesas</p>
-            <div class="chart-wrap"><canvas id="chartPie2"></canvas></div>
-          </div>
+          <div class="calc-rows" id="calcJuros"></div>
         </div>
-      </section>
-
-      <!-- ════════════════════════════════════════
-           ABA: PLANILHA
-      ════════════════════════════════════════ -->
-      <section id="tab-planilha" class="tab">
-        <div class="page-header">
-          <div>
-            <h1>Planilha Financeira Anual</h1>
-            <p class="page-sub">Projeção mês a mês com todos os indicadores</p>
+        <div class="card">
+          <p class="card-title gold-title">🏠 Análise Imobiliária</p>
+          <div class="params-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px">
+            <div class="field-group"><label class="field-label">Valor do Imóvel</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="imImovel" class="field-input" value="450000" /></div></div>
+            <div class="field-group"><label class="field-label">Aluguel Mensal</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="imAluguel" class="field-input" value="2500" /></div></div>
+            <div class="field-group"><label class="field-label">Financiamento</label><div class="input-wrap"><span class="pfx">R$</span><input type="number" id="imFinanc" class="field-input" value="200000" /></div></div>
+            <div class="field-group"><label class="field-label">Meses</label><div class="input-wrap"><span class="pfx">#</span><input type="number" id="imMeses" class="field-input" value="240" /></div></div>
           </div>
+          <div class="calc-rows" id="calcImovel"></div>
         </div>
+        <div class="card"><p class="card-title gold-title">📈 Análise de Projeto</p><div class="calc-rows" id="calcProjeto"></div></div>
+      </div>
+    </section>
 
-        <div class="card table-card" style="overflow-x:auto">
-          <div id="planilhaTable"></div>
-        </div>
+    <!-- ═══ GRÁFICOS ═══ -->
+    <section id="tab-graficos" class="tab">
+      <div class="page-header">
+        <div><h1>Gráficos & Análises</h1><p class="page-sub">Visualizações dinâmicas do seu financeiro</p></div>
+      </div>
+      <div class="charts-grid-2">
+        <div class="card"><p class="card-title">Crescimento por Juros Compostos</p><div class="chart-wrap"><canvas id="chartJuros"></canvas></div></div>
+        <div class="card"><p class="card-title">Resultado Mensal (Lucro/Prejuízo)</p><div class="chart-wrap"><canvas id="chartLucroMensal"></canvas></div></div>
+        <div class="card"><p class="card-title">Receita vs Despesa</p><div class="chart-wrap"><canvas id="chartBarRecDesp"></canvas></div></div>
+        <div class="card"><p class="card-title">Alocação de Despesas</p><div class="chart-wrap"><canvas id="chartPie2"></canvas></div></div>
+      </div>
+    </section>
 
-        <div class="kpi-grid" id="planilhaTotais"></div>
-      </section>
+    <!-- ═══ PLANILHA ═══ -->
+    <section id="tab-planilha" class="tab">
+      <div class="page-header">
+        <div><h1>Planilha Financeira Anual</h1><p class="page-sub">Projeção mês a mês com todos os indicadores</p></div>
+      </div>
+      <div class="card table-card" style="overflow-x:auto"><div id="planilhaTable"></div></div>
+      <div class="kpi-grid" id="planilhaTotais"></div>
+    </section>
 
-    </main>
-  </div>
+  </main>
+</div>
 
-  <script src="app.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
